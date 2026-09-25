@@ -1,0 +1,116 @@
+@import "tailwindcss";
+
+/* ─────────────── World Auto design tokens ───────────────
+   Direction: "cargo manifest" — graphite night, signal orange,
+   jade route line, monospace shipping-label details.        */
+
+:root {
+  --font-archivo: "Archivo Variable";
+  --font-inter: "Inter Variable";
+  --font-jetbrains: "JetBrains Mono Variable";
+  --font-kufi: "Noto Kufi Arabic Variable";
+}
+
+@theme {
+  --color-ink: #0a0c0f;
+  --color-night: #101318;
+  --color-panel: #151a20;
+  --color-panel-2: #1b2129;
+  --color-line: #262d37;
+  --color-line-2: #333c48;
+  --color-fog: #8b95a4;
+  --color-mist: #b9c1cc;
+  --color-paper: #eef1f4;
+  --color-signal: #ff5a1f;
+  --color-signal-2: #ff7c45;
+  --color-jade: #2fd6a6;
+  --color-amber: #ffc23d;
+  --color-crimson: #ff4d5e;
+
+  --font-sans: var(--font-inter), var(--font-kufi), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-archivo), var(--font-kufi), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
+
+  --animate-marquee: marquee 38s linear infinite;
+  --animate-dash: dash 2.4s linear infinite;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-pulse-ring: pulse-ring 2.2s ease-out infinite;
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  @keyframes dash {
+    to { stroke-dashoffset: -40; }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  @keyframes pulse-ring {
+    0% { transform: scale(0.6); opacity: 0.9; }
+    100% { transform: scale(2.2); opacity: 0; }
+  }
+}
+
+html {
+  color-scheme: dark;
+  background: var(--color-ink);
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-ink);
+  color: var(--color-paper);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+[dir="rtl"] body { font-family: var(--font-kufi), var(--font-inter), sans-serif; }
+[dir="rtl"] .font-display { font-family: var(--font-kufi), sans-serif; font-stretch: normal; letter-spacing: 0; }
+[dir="rtl"] .rtl-flip { transform: scaleX(-1); }
+[dir="rtl"] .animate-marquee { animation-direction: reverse; }
+
+.font-display { font-stretch: 118%; letter-spacing: -0.02em; }
+
+/* Blueprint grid background */
+.bg-grid {
+  background-image:
+    linear-gradient(to right, rgb(255 255 255 / 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.035) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+.bg-grid-fade {
+  mask-image: radial-gradient(ellipse 80% 70% at 50% 30%, black 40%, transparent 100%);
+}
+
+/* Cargo-label style chip */
+.tag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+[dir="rtl"] .tag { font-family: var(--font-kufi); letter-spacing: 0; text-transform: none; font-size: 12px; }
+
+/* Perforated divider like a shipping ticket */
+.perforated {
+  background-image: radial-gradient(circle, var(--color-ink) 4px, transparent 4.5px);
+  background-size: 16px 16px;
+  background-repeat: repeat-x;
+  background-position: center;
+  height: 10px;
+}
+
+.hazard {
+  background: repeating-linear-gradient(-45deg, var(--color-signal) 0 10px, var(--color-ink) 10px 20px);
+}
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { scrollbar-width: none; }
+
+input, select, textarea { font: inherit; }
+
+::selection { background: var(--color-signal); color: white; }
+
+:focus-visible { outline: 2px solid var(--color-signal); outline-offset: 2px; }
