@@ -1,0 +1,54 @@
+name: Quality gate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: quality-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: Typecheck, lint, test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install (fails if the lockfile is out of sync)
+        run: |
+          if [ -f pnpm-lock.yaml ]; then corepack enable && pnpm install --frozen-lockfile
+          elif [ -f package-lock.json ]; then npm ci
+          else echo "No lockfile committed. Commit one." && exit 1
+          fi
+      - run: npm run --if-present typecheck
+      - run: npm run --if-present lint
+      - run: npm test --if-present
+        env:
+          CI: "1"
+
+  security:
+    name: Dependencies and secrets
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # full history: a secret committed then deleted is still found
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Known vulnerabilities (blocks on critical)
+        run: |
+          if [ -f pnpm-lock.yaml ]; then corepack enable && pnpm audit --audit-level critical
+          else npm audit --package-lock-only --audit-level=critical
+          fi
+      - name: Secrets in git history
+        uses: trufflesecurity/trufflehog@main
+        with:
+          extra_args: --results=verified,unknown
